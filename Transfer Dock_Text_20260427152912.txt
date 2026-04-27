@@ -1,0 +1,836 @@
+import { useState } from "react";
+
+const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap');`;
+
+const PRODUCTS = [
+  // ── ETHNIC WOMEN (20) ─────────────────────────────────────────────────────
+  {id:1,  name:"Jaipuri Block Print Kurti Set",      brand:"Solfru",       price:899,  original:1499, cat:"Ethnic",   tag:"AR TRY",    rating:4.7,reviews:843,  supplier:"Solfru",       margin:540,  wholesale:359,  img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=480&q=80",sizes:["S","M","L","XL","2XL"],  desc:"Jaipuri block-print cotton kurti with matching palazzo. Breathable rayon fabric."},
+  {id:2,  name:"Chanderi Silk Kurta + Dupatta",      brand:"Baapstore",    price:1299, original:2100, cat:"Ethnic",   tag:"NEW IN",    rating:4.8,reviews:621,  supplier:"Baapstore",    margin:700,  wholesale:599,  img:"https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Elegant Chanderi silk kurta with contrast dupatta and churidar."},
+  {id:3,  name:"Cotton Anarkali Suit",               brand:"Solfru",       price:999,  original:1600, cat:"Ethnic",   tag:"SALE",      rating:4.6,reviews:455,  supplier:"Solfru",       margin:600,  wholesale:399,  img:"https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=480&q=80",sizes:["S","M","L","XL","2XL"],  desc:"Pure cotton Anarkali with printed dupatta and churidar."},
+  {id:4,  name:"Rayon Printed Palazzo Kurta",        brand:"Baapstore",    price:799,  original:1299, cat:"Ethnic",   tag:"BESTSELLER",rating:4.7,reviews:1102, supplier:"Baapstore",    margin:450,  wholesale:349,  img:"https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=480&q=80",sizes:["S","M","L","XL","2XL"],  desc:"Rayon printed palazzo kurta set with vibrant Jaipur prints."},
+  {id:5,  name:"Embroidered Georgette Kurta",        brand:"Wholesalebox", price:1499, original:2500, cat:"Ethnic",   tag:"AR TRY",    rating:4.8,reviews:389,  supplier:"Wholesalebox", margin:850,  wholesale:649,  img:"https://images.unsplash.com/photo-1562137369-1a1a0bc66744?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Georgette kurta with intricate thread embroidery at neckline."},
+  {id:6,  name:"Lucknowi Chikankari Kurti",          brand:"Baapstore",    price:1199, original:1999, cat:"Ethnic",   tag:"LUXURY",    rating:4.9,reviews:278,  supplier:"Baapstore",    margin:700,  wholesale:499,  img:"https://images.unsplash.com/photo-1604176354204-9268737828e4?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Authentic Lucknowi chikankari on soft cotton. Handcrafted."},
+  {id:7,  name:"Patiala Salwar Suit Set",            brand:"Solfru",       price:1099, original:1799, cat:"Ethnic",   tag:"NEW IN",    rating:4.6,reviews:534,  supplier:"Solfru",       margin:650,  wholesale:449,  img:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=480&q=80",sizes:["S","M","L","XL","2XL"],  desc:"Traditional Patiala suit with printed dupatta."},
+  {id:8,  name:"Maxi Indo-Western Dress",            brand:"Wholesalebox", price:1399, original:2200, cat:"Ethnic",   tag:"AR TRY",    rating:4.7,reviews:312,  supplier:"Wholesalebox", margin:800,  wholesale:599,  img:"https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=480&q=80",sizes:["XS","S","M","L","XL"],   desc:"Indo-western maxi dress with floral print and tie-dye effect."},
+  {id:9,  name:"Phulkari Embroidered Suit",          brand:"Baapstore",    price:1599, original:2700, cat:"Ethnic",   tag:"FESTIVE",   rating:4.8,reviews:190,  supplier:"Baapstore",    margin:950,  wholesale:649,  img:"https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Vibrant Phulkari embroidered Punjabi suit with dupatta."},
+  {id:10, name:"Kurti Sharara Set",                  brand:"Solfru",       price:1299, original:2100, cat:"Ethnic",   tag:"HOT DEAL",  rating:4.7,reviews:445,  supplier:"Solfru",       margin:750,  wholesale:549,  img:"https://images.unsplash.com/photo-1529139574466-a303027330d5?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Trendy kurti sharara set with embroidered dupatta."},
+  {id:11, name:"Angrakha Style Kurta Set",           brand:"Wholesalebox", price:1199, original:1900, cat:"Ethnic",   tag:"NEW IN",    rating:4.6,reviews:267,  supplier:"Wholesalebox", margin:700,  wholesale:499,  img:"https://images.unsplash.com/photo-1542295669297-4d352b042bca?w=480&q=80",sizes:["S","M","L","XL","2XL"],  desc:"Traditional Angrakha style kurta with matching bottom."},
+  {id:12, name:"Cotton Straight Kurti 5-Piece Set",  brand:"Baapstore",    price:2499, original:4000, cat:"Ethnic",   tag:"COMBO",     rating:4.5,reviews:892,  supplier:"Baapstore",    margin:1400, wholesale:1099, img:"https://images.unsplash.com/photo-1566206091558-7f218b696731?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Pack of 5 cotton straight kurtis in assorted prints."},
+  {id:13, name:"Silk Blend Partywear Kurta",         brand:"Solfru",       price:1899, original:3200, cat:"Ethnic",   tag:"PARTY",     rating:4.8,reviews:334,  supplier:"Solfru",       margin:1100, wholesale:799,  img:"https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Luxurious silk blend partywear kurta with zari work."},
+  {id:14, name:"Kota Doria Suit Set",                brand:"Baapstore",    price:999,  original:1599, cat:"Ethnic",   tag:"SALE",      rating:4.6,reviews:421,  supplier:"Baapstore",    margin:580,  wholesale:419,  img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=480&q=80",sizes:["S","M","L","XL","2XL"],  desc:"Light Kota Doria suit set perfect for summer wear."},
+  {id:15, name:"Gota Patti Kurta Palazzo",           brand:"Wholesalebox", price:2199, original:3500, cat:"Ethnic",   tag:"AR TRY",    rating:4.9,reviews:156,  supplier:"Wholesalebox", margin:1300, wholesale:899,  img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Exquisite Gota Patti work on pastel kurta with palazzo."},
+  {id:16, name:"Block Print A-Line Kurta",           brand:"Solfru",       price:699,  original:1199, cat:"Ethnic",   tag:"BUDGET",    rating:4.5,reviews:1234, supplier:"Solfru",       margin:400,  wholesale:299,  img:"https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=480&q=80",sizes:["S","M","L","XL","2XL"],  desc:"Budget-friendly block print A-line kurta in pure cotton."},
+  {id:17, name:"Tissue Silk Festive Suit",           brand:"Baapstore",    price:2499, original:4000, cat:"Ethnic",   tag:"FESTIVE",   rating:4.8,reviews:201,  supplier:"Baapstore",    margin:1400, wholesale:1099, img:"https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Tissue silk festive suit with intricate zardozi work."},
+  {id:18, name:"Handloom Cotton Kurti Set",          brand:"Wholesalebox", price:1099, original:1799, cat:"Ethnic",   tag:"HANDMADE",  rating:4.7,reviews:389,  supplier:"Wholesalebox", margin:650,  wholesale:449,  img:"https://images.unsplash.com/photo-1562137369-1a1a0bc66744?w=480&q=80",sizes:["S","M","L","XL","2XL"],  desc:"Authentic handloom cotton kurti set with natural dyes."},
+  {id:19, name:"Floral Georgette Palazzo Set",       brand:"Solfru",       price:1299, original:2000, cat:"Ethnic",   tag:"NEW IN",    rating:4.6,reviews:267,  supplier:"Solfru",       margin:750,  wholesale:549,  img:"https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=480&q=80",sizes:["S","M","L","XL"],         desc:"Floral georgette palazzo set with matching dupatta."},
+  {id:20, name:"Digital Print Crepe Suit",           brand:"Baapstore",    price:1199, original:1900, cat:"Ethnic",   tag:"TRENDING",  rating:4.7,reviews:445,  supplier:"Baapstore",    margin:700,  wholesale:499,  img:"https://images.unsplash.com/photo-1604176354204-9268737828e4?w=480&q=80",sizes:["S","M","L","XL","2XL"],  desc:"Trendy digital print crepe suit with contrast dupatta."},
+  // ── SAREES (10) ───────────────────────────────────────────────────────────
+  {id:21, name:"Georgette Printed Saree",            brand:"Baapstore",    price:799,  original:1300, cat:"Sarees",   tag:"HOT DEAL",  rating:4.5,reviews:2891, supplier:"Baapstore",    margin:450,  wholesale:349,  img:"https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=480&q=80",sizes:["Free Size"],              desc:"Women's georgette printed saree with unstitched blouse."},
+  {id:22, name:"Banarasi Silk Gold Zari Saree",      brand:"Wholesalebox", price:2499, original:3800, cat:"Sarees",   tag:"LUXURY",    rating:4.9,reviews:445,  supplier:"Wholesalebox", margin:1250, wholesale:1249, img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=480&q=80",sizes:["Free Size"],              desc:"Pure Banarasi silk with gold zari work. Wedding special."},
+  {id:23, name:"Kota Doria Cotton Saree",            brand:"Baapstore",    price:999,  original:1599, cat:"Sarees",   tag:"NEW IN",    rating:4.6,reviews:334,  supplier:"Baapstore",    margin:580,  wholesale:419,  img:"https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=480&q=80",sizes:["Free Size"],              desc:"Kota Doria cotton saree. Lightweight and breathable."},
+  {id:24, name:"Organza Silk Party Saree",           brand:"Solfru",       price:1899, original:3000, cat:"Sarees",   tag:"PARTY",     rating:4.8,reviews:189,  supplier:"Solfru",       margin:1100, wholesale:799,  img:"https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=480&q=80",sizes:["Free Size"],              desc:"Shimmering organza silk saree with embroidered border."},
+  {id:25, name:"Cotton Ikkat Saree",                 brand:"Baapstore",    price:899,  original:1499, cat:"Sarees",   tag:"HANDMADE",  rating:4.7,reviews:567,  supplier:"Baapstore",    margin:540,  wholesale:359,  img:"https://images.unsplash.com/photo-1562137369-1a1a0bc66744?w=480&q=80",sizes:["Free Size"],              desc:"Authentic cotton Ikkat saree with traditional patterns."},
+  {id:26, name:"Chiffon Designer Saree",             brand:"Wholesalebox", price:1299, original:2200, cat:"Sarees",   tag:"TRENDING",  rating:4.6,reviews:423,  supplier:"Wholesalebox", margin:750,  wholesale:549,  img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=480&q=80",sizes:["Free Size"],              desc:"Designer chiffon saree with sequin border and blouse piece."},
+  {id:27, name:"Phulkari Silk Saree",                brand:"Baapstore",    price:1699, original:2800, cat:"Sarees",   tag:"FESTIVE",   rating:4.8,reviews:201,  supplier:"Baapstore",    margin:1000, wholesale:699,  img:"https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=480&q=80",sizes:["Free Size"],              desc:"Vibrant Phulkari embroidered silk saree for festive occasions."},
+  {id:28, name:"Linen Handloom Saree",               brand:"Solfru",       price:1099, original:1800, cat:"Sarees",   tag:"DAILY",     rating:4.5,reviews:678,  supplier:"Solfru",       margin:650,  wholesale:449,  img:"https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=480&q=80",sizes:["Free Size"],              desc:"Comfortable linen handloom saree for daily wear."},
+  {id:29, name:"Mysore Silk Saree",                  brand:"Wholesalebox", price:3499, original:5500, cat:"Sarees",   tag:"LUXURY",    rating:5.0,reviews:134,  supplier:"Wholesalebox", margin:1750, wholesale:1749, img:"https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=480&q=80",sizes:["Free Size"],              desc:"Premium Mysore silk saree with rich zari border."},
+  {id:30, name:"Patola Silk Saree",                  brand:"Baapstore",    price:2999, original:4800, cat:"Sarees",   tag:"DESIGNER",  rating:4.9,reviews:89,   supplier:"Baapstore",    margin:1500, wholesale:1499, img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=480&q=80",sizes:["Free Size"],              desc:"Traditional Patola silk saree with double ikat weaving."},
+  // ── MENSWEAR (10) ─────────────────────────────────────────────────────────
+  {id:31, name:"Embroidered Silk Kurta Pyjama",      brand:"Baapstore",    price:1799, original:2999, cat:"Menswear", tag:"BESTSELLER",rating:4.8,reviews:1204, supplier:"Baapstore",    margin:900,  wholesale:899,  img:"https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=480&q=80",sizes:["S","M","L","XL","XXL"],   desc:"Premium embroidered silk kurta pyjama. Festive essentials."},
+  {id:32, name:"Men's Oxford Cotton Shirt",          brand:"Baapstore",    price:699,  original:1200, cat:"Menswear", tag:"OFFICE",    rating:4.4,reviews:1876, supplier:"Baapstore",    margin:380,  wholesale:319,  img:"https://images.unsplash.com/photo-1603252109303-2751441dd157?w=480&q=80",sizes:["S","M","L","XL","XXL"],   desc:"Classic Oxford weave cotton shirt. Non-iron finish."},
+  {id:33, name:"Bandhgala Jodhpuri Suit",            brand:"Wholesalebox", price:3499, original:5500, cat:"Menswear", tag:"WEDDING",   rating:4.8,reviews:312,  supplier:"Wholesalebox", margin:1750, wholesale:1749, img:"https://images.unsplash.com/photo-1566206091558-7f218b696731?w=480&q=80",sizes:["S","M","L","XL","XXL"],   desc:"Premium Bandhgala Jodhpuri suit for weddings and formals."},
+  {id:34, name:"Pathani Suit Set",                   brand:"Solfru",       price:1299, original:2100, cat:"Menswear", tag:"NEW IN",    rating:4.6,reviews:534,  supplier:"Solfru",       margin:750,  wholesale:549,  img:"https://images.unsplash.com/photo-1542295669297-4d352b042bca?w=480&q=80",sizes:["S","M","L","XL","XXL"],   desc:"Traditional Pathani suit in premium cotton fabric."},
+  {id:35, name:"Linen Casual Shirt",                 brand:"Solfru",       price:899,  original:1499, cat:"Menswear", tag:"AR TRY",    rating:4.5,reviews:891,  supplier:"Solfru",       margin:540,  wholesale:359,  img:"https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=480&q=80",sizes:["S","M","L","XL","XXL"],   desc:"Relaxed linen shirt in sage green. Breathable all-day."},
+  {id:36, name:"Men's Kurta with Jacket",            brand:"Baapstore",    price:1999, original:3200, cat:"Menswear", tag:"FESTIVE",   rating:4.7,reviews:267,  supplier:"Baapstore",    margin:1100, wholesale:899,  img:"https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Stylish kurta with nehru jacket set for festive events."},
+  {id:37, name:"Men's Printed Linen Shirt",          brand:"Solfru",       price:799,  original:1399, cat:"Menswear", tag:"TRENDING",  rating:4.6,reviews:678,  supplier:"Solfru",       margin:480,  wholesale:319,  img:"https://images.unsplash.com/photo-1529139574466-a303027330d5?w=480&q=80",sizes:["S","M","L","XL","XXL"],   desc:"Stylish printed linen shirt for casual and semi-formal."},
+  {id:38, name:"Men's Silk Sherwani",                brand:"Wholesalebox", price:4999, original:7500, cat:"Menswear", tag:"BRIDAL",    rating:4.9,reviews:123,  supplier:"Wholesalebox", margin:2500, wholesale:2499, img:"https://images.unsplash.com/photo-1562137369-1a1a0bc66744?w=480&q=80",sizes:["S","M","L","XL","XXL"],   desc:"Opulent silk sherwani for groom. Full embroidery work."},
+  {id:39, name:"Men's Casual Chinos",                brand:"Baapstore",    price:999,  original:1699, cat:"Menswear", tag:"SALE",      rating:4.4,reviews:1102, supplier:"Baapstore",    margin:580,  wholesale:419,  img:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=480&q=80",sizes:["28","30","32","34","36"],   desc:"Slim fit chinos in premium cotton blend. Office to casual."},
+  {id:40, name:"Men's Nehru Jacket Set",             brand:"Solfru",       price:1499, original:2500, cat:"Menswear", tag:"PARTY",     rating:4.7,reviews:389,  supplier:"Solfru",       margin:900,  wholesale:599,  img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Classic Nehru jacket paired with kurta. Party ready."},
+  // ── WESTERN (10) ──────────────────────────────────────────────────────────
+  {id:41, name:"Women's Linen Blazer",               brand:"Solfru",       price:1899, original:2800, cat:"Western",  tag:"AR TRY",    rating:4.4,reviews:312,  supplier:"Solfru",       margin:950,  wholesale:949,  img:"https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=480&q=80",sizes:["XS","S","M","L","XL"],    desc:"Relaxed-fit linen blazer in warm beige. Indo-western styling."},
+  {id:42, name:"Fusion Crop Top + Skirt Set",        brand:"Wholesalebox", price:1499, original:2400, cat:"Western",  tag:"TRENDING",  rating:4.6,reviews:445,  supplier:"Wholesalebox", margin:850,  wholesale:649,  img:"https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=480&q=80",sizes:["XS","S","M","L","XL"],    desc:"Indo-western crop top and skirt set with mirror work."},
+  {id:43, name:"Women's Denim Jacket",               brand:"Baapstore",    price:1299, original:2100, cat:"Western",  tag:"NEW IN",    rating:4.3,reviews:567,  supplier:"Baapstore",    margin:700,  wholesale:599,  img:"https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=480&q=80",sizes:["XS","S","M","L","XL"],    desc:"Classic denim jacket with ethnic embroidery detailing."},
+  {id:44, name:"Flared Palazzo Pants",               brand:"Solfru",       price:799,  original:1299, cat:"Western",  tag:"SALE",      rating:4.5,reviews:891,  supplier:"Solfru",       margin:480,  wholesale:319,  img:"https://images.unsplash.com/photo-1542295669297-4d352b042bca?w=480&q=80",sizes:["XS","S","M","L","XL","2XL"],desc:"Flared palazzo pants in solid colors for layered looks."},
+  {id:45, name:"Printed Wrap Dress",                 brand:"Wholesalebox", price:1199, original:1999, cat:"Western",  tag:"HOT DEAL",  rating:4.6,reviews:334,  supplier:"Wholesalebox", margin:700,  wholesale:499,  img:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=480&q=80",sizes:["XS","S","M","L","XL"],    desc:"Boho printed wrap dress with tie-up waist."},
+  {id:46, name:"Women's Formal Trousers",            brand:"Baapstore",    price:999,  original:1699, cat:"Western",  tag:"OFFICE",    rating:4.4,reviews:678,  supplier:"Baapstore",    margin:580,  wholesale:419,  img:"https://images.unsplash.com/photo-1529139574466-a303027330d5?w=480&q=80",sizes:["XS","S","M","L","XL"],    desc:"Slim-fit formal trousers in stretch fabric."},
+  {id:47, name:"Embroidered Jacket + Jeans",         brand:"Solfru",       price:2499, original:3999, cat:"Western",  tag:"AR TRY",    rating:4.7,reviews:201,  supplier:"Solfru",       margin:1400, wholesale:1099, img:"https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=480&q=80",sizes:["XS","S","M","L","XL"],    desc:"Indo-western embroidered jacket with dark wash jeans."},
+  {id:48, name:"Cotton Co-ord Set",                  brand:"Wholesalebox", price:1399, original:2300, cat:"Western",  tag:"NEW IN",    rating:4.6,reviews:423,  supplier:"Wholesalebox", margin:800,  wholesale:599,  img:"https://images.unsplash.com/photo-1566206091558-7f218b696731?w=480&q=80",sizes:["XS","S","M","L","XL"],    desc:"Matching cotton co-ord set with crop top and wide leg pants."},
+  {id:49, name:"Women's Printed Maxi Dress",         brand:"Baapstore",    price:1099, original:1899, cat:"Western",  tag:"SUMMER",    rating:4.5,reviews:534,  supplier:"Baapstore",    margin:650,  wholesale:449,  img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=480&q=80",sizes:["XS","S","M","L","XL"],    desc:"Flowy printed maxi dress for beach and casual outings."},
+  {id:50, name:"Indo-Western Jumpsuit",              brand:"Solfru",       price:1699, original:2800, cat:"Western",  tag:"TRENDING",  rating:4.7,reviews:267,  supplier:"Solfru",       margin:1000, wholesale:699,  img:"https://images.unsplash.com/photo-1562137369-1a1a0bc66744?w=480&q=80",sizes:["XS","S","M","L","XL"],    desc:"Stylish indo-western jumpsuit with embroidery at neckline."},
+  // ── FESTIVE (10) ──────────────────────────────────────────────────────────
+  {id:51, name:"Bridal Red Lehenga Choli",           brand:"Wholesalebox", price:5999, original:9000, cat:"Festive",  tag:"BRIDAL",    rating:5.0,reviews:189,  supplier:"Wholesalebox", margin:3000, wholesale:2999, img:"https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Opulent bridal lehenga in crimson silk with gold embroidery."},
+  {id:52, name:"Mirror Work Lehenga Set",            brand:"Wholesalebox", price:2999, original:4800, cat:"Festive",  tag:"FESTIVE",   rating:4.7,reviews:287,  supplier:"Wholesalebox", margin:1500, wholesale:1499, img:"https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Boho-chic lehenga with intricate mirror work embroidery."},
+  {id:53, name:"Sequin Party Lehenga",               brand:"Baapstore",    price:3499, original:5500, cat:"Festive",  tag:"PARTY",     rating:4.8,reviews:156,  supplier:"Baapstore",    margin:1750, wholesale:1749, img:"https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Dazzling sequin party lehenga. Stand out at every event."},
+  {id:54, name:"Navratri Chaniya Choli",             brand:"Solfru",       price:1299, original:2200, cat:"Festive",  tag:"NAVRATRI",  rating:4.6,reviews:534,  supplier:"Solfru",       margin:750,  wholesale:549,  img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=480&q=80",sizes:["S","M","L","XL","2XL"],   desc:"Vibrant Navratri chaniya choli with mirror and thread work."},
+  {id:55, name:"Sharara Set for Weddings",           brand:"Wholesalebox", price:3999, original:6500, cat:"Festive",  tag:"WEDDING",   rating:4.9,reviews:201,  supplier:"Wholesalebox", margin:2000, wholesale:1999, img:"https://images.unsplash.com/photo-1562137369-1a1a0bc66744?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Luxurious sharara set with intricate zardozi embroidery."},
+  {id:56, name:"Girls Floral Lehenga",               brand:"Baapstore",    price:1999, original:3200, cat:"Festive",  tag:"KIDS",      rating:4.7,reviews:312,  supplier:"Baapstore",    margin:1100, wholesale:899,  img:"https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=480&q=80",sizes:["2-3Y","4-5Y","6-7Y","8-9Y"],desc:"Adorable floral lehenga for little girls. Festive special."},
+  {id:57, name:"Heavy Embroidered Anarkali",         brand:"Wholesalebox", price:4499, original:7000, cat:"Festive",  tag:"DESIGNER",  rating:4.9,reviews:134,  supplier:"Wholesalebox", margin:2250, wholesale:2249, img:"https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Heavy embroidered Anarkali for sangeet and reception."},
+  {id:58, name:"Zari Work Palazzo Set",              brand:"Solfru",       price:2499, original:4000, cat:"Festive",  tag:"FESTIVE",   rating:4.8,reviews:189,  supplier:"Solfru",       margin:1400, wholesale:1099, img:"https://images.unsplash.com/photo-1566206091558-7f218b696731?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Elegant zari work palazzo set for festive celebrations."},
+  {id:59, name:"Banarasi Silk Lehenga",              brand:"Baapstore",    price:7999, original:12000,cat:"Festive",  tag:"LUXURY",    rating:5.0,reviews:67,   supplier:"Baapstore",    margin:4000, wholesale:3999, img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Pure Banarasi silk bridal lehenga with hand-woven gold zari."},
+  {id:60, name:"Velvet Embroidered Suit",            brand:"Wholesalebox", price:2999, original:4800, cat:"Festive",  tag:"WINTER",    rating:4.7,reviews:156,  supplier:"Wholesalebox", margin:1500, wholesale:1499, img:"https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=480&q=80",sizes:["S","M","L","XL"],          desc:"Rich velvet embroidered suit for winter festivities."},
+];
+
+const fmt = p => "₹" + p.toLocaleString("en-IN");
+const SUP_COLORS = {
+  Solfru:["rgba(160,120,64,0.18)","#a07840"],
+  Baapstore:["rgba(34,85,160,0.18)","#6090d0"],
+  Wholesalebox:["rgba(45,122,79,0.18)","#2d7a4f"]
+};
+
+const CSS = `
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',sans-serif;background:#0a0908;display:flex;justify-content:center;min-height:100vh;padding:20px 0;}
+.sf{font-family:'Cormorant Garamond',serif;}.mn{font-family:'DM Mono',monospace;}
+.phone{width:390px;height:844px;background:#1a1714;border-radius:46px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(255,255,255,0.09),0 50px 140px rgba(0,0,0,0.95),inset 0 1px 0 rgba(255,255,255,0.06);}
+@media(max-width:430px){body{padding:0;background:#1a1714;}.phone{width:100%;height:100dvh;border-radius:0;}}
+.sbar{height:44px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;flex-shrink:0;}
+.st{font-family:'DM Mono';font-size:13px;color:#fff;}.sr2{display:flex;gap:4px;font-size:11px;color:#fff;}
+.scr{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.sc{flex:1;overflow-y:auto;scrollbar-width:none;}.sc::-webkit-scrollbar{display:none;}
+.bnav{height:72px;background:rgba(14,12,10,0.98);backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-around;padding:0 4px 8px;flex-shrink:0;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;border:none;background:none;cursor:pointer;border-radius:12px;min-width:46px;}
+.ni.act{background:rgba(160,120,64,0.09);}
+.ni-ic{font-size:20px;transition:transform .2s;}.ni.act .ni-ic{transform:scale(1.1);}
+.ni-lb{font-family:'DM Mono';font-size:7px;letter-spacing:1px;color:#4a4238;text-transform:uppercase;}.ni.act .ni-lb{color:#a07840;}
+.ni-dot{width:4px;height:4px;border-radius:50%;background:#a07840;margin-top:1px;opacity:0;}.ni.act .ni-dot{opacity:1;}
+.hh{padding:12px 20px 10px;display:flex;justify-content:space-between;align-items:center;}
+.hlogo{font-family:'Cormorant Garamond';font-size:22px;color:#fff;letter-spacing:5px;font-weight:300;}
+.hacts{display:flex;gap:8px;}
+.icb{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.07);border:none;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;position:relative;color:#fff;}
+.cbdg{position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:#a07840;font-family:'DM Mono';font-size:8px;color:#1a1714;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.sb2{margin:2px 20px 12px;background:rgba(255,255,255,0.05);border-radius:12px;padding:11px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.sb2 span{font-size:14px;}.sb2 p{font-size:13px;color:rgba(255,255,255,0.2);font-weight:300;}
+.cats{padding:0 20px 12px;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;}.cats::-webkit-scrollbar{display:none;}
+.cat{padding:6px 14px;border-radius:20px;font-family:'DM Mono';font-size:8px;letter-spacing:1px;border:1px solid;white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .2s;}
+.cat.ac{background:#a07840;border-color:#a07840;color:#1a1714;}.cat:not(.ac){border-color:rgba(160,120,64,0.3);color:#a07840;}
+.sf-row{padding:0 20px 14px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}.sf-row::-webkit-scrollbar{display:none;}
+.sfb{padding:5px 12px;border-radius:20px;font-family:'DM Mono';font-size:7.5px;letter-spacing:1px;border:1px solid;white-space:nowrap;flex-shrink:0;cursor:pointer;background:none;}
+.banner{margin:0 20px 18px;background:linear-gradient(135deg,#232120,#2e2b27);border-radius:16px;padding:18px;position:relative;overflow:hidden;cursor:pointer;}
+.banner::before{content:'AI';position:absolute;right:-8px;top:-14px;font-family:'Cormorant Garamond';font-size:100px;font-weight:300;color:rgba(160,120,64,0.07);line-height:1;}
+.btag{background:#a07840;color:#1a1714;padding:3px 10px;border-radius:4px;font-family:'DM Mono';font-size:7.5px;letter-spacing:1px;display:inline-block;margin-bottom:7px;}
+.bttl{font-family:'Cormorant Garamond';font-size:21px;font-weight:300;color:#fff;line-height:1.15;margin-bottom:4px;}
+.bsub{font-size:12px;color:rgba(255,255,255,0.38);font-weight:300;margin-bottom:12px;}
+.bcta{background:#a07840;color:#1a1714;border:none;padding:8px 18px;border-radius:9px;font-family:'DM Mono';font-size:8.5px;letter-spacing:1px;cursor:pointer;font-weight:500;}
+.shd{padding:0 20px 12px;display:flex;justify-content:space-between;align-items:center;}
+.shd-t{font-size:15px;font-weight:500;color:#fff;}.shd-c{font-family:'DM Mono';font-size:8px;color:#4a4238;}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px 24px;}
+.pc{background:#232120;border-radius:14px;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,0.04);transition:transform .18s;}
+.pc:active{transform:scale(0.96);}
+.pc-img{height:155px;position:relative;overflow:hidden;background:#1e1c19;}
+.pc-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.pc-fb{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:44px;}
+.pc-fav{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(20,18,16,0.75);backdrop-filter:blur(10px);border:none;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;}
+.pc-tag{position:absolute;top:8px;left:8px;background:#a07840;color:#1a1714;font-family:'DM Mono';font-size:6px;letter-spacing:1px;padding:3px 6px;border-radius:4px;}
+.pc-tag.sale{background:#b83232;}.pc-tag.lux{background:#1a1714;color:#a07840;border:1px solid #a07840;}
+.pc-tag.hot{background:#c05020;}.pc-tag.wed{background:#3a1a5a;color:#c090e0;}
+.pc-tag.bri{background:#5a1020;color:#f0a0b0;}.pc-tag.nav{background:#1a3a5a;color:#80c0f0;}
+.pc-info{padding:10px 11px;}
+.pc-sup{font-family:'DM Mono';font-size:6px;letter-spacing:1px;margin-bottom:1px;}
+.pc-brand{font-family:'DM Mono';font-size:7px;color:#4a4238;letter-spacing:1px;margin-bottom:3px;}
+.pc-name{font-size:11.5px;color:#fff;line-height:1.3;margin-bottom:6px;}
+.pc-prices{display:flex;align-items:center;gap:6px;}
+.pc-price{font-family:'DM Mono';font-size:12px;color:#a07840;}
+.pc-orig{font-family:'DM Mono';font-size:9px;color:#4a4238;text-decoration:line-through;}
+.pc-mgn{font-family:'DM Mono';font-size:7px;color:#2d7a4f;margin-top:3px;}
+.pdpw{display:flex;flex-direction:column;height:100%;}
+.pdp-iw{height:295px;position:relative;flex-shrink:0;overflow:hidden;background:#1e1c19;}
+.pdp-iw img{width:100%;height:100%;object-fit:cover;}
+.pdp-iw .pc-fb{font-size:80px;}
+.pdp-bk{position:absolute;top:12px;left:14px;z-index:10;width:34px;height:34px;border-radius:50%;background:rgba(20,18,16,0.75);backdrop-filter:blur(10px);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.pdp-wl{position:absolute;top:12px;right:14px;z-index:10;width:34px;height:34px;border-radius:50%;background:rgba(20,18,16,0.75);backdrop-filter:blur(10px);border:none;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.pdp-arb{position:absolute;bottom:13px;right:13px;background:rgba(160,120,64,0.14);backdrop-filter:blur(10px);border:1px solid rgba(160,120,64,0.4);padding:5px 12px;border-radius:8px;font-family:'DM Mono';font-size:8px;color:#a07840;letter-spacing:1px;cursor:pointer;}
+.pdp-dots{position:absolute;bottom:11px;left:50%;transform:translateX(-50%);display:flex;gap:5px;}
+.pdp-dot{height:4px;border-radius:2px;background:rgba(255,255,255,0.25);transition:all .3s;}
+.pdp-dot.ac{background:#a07840;width:18px;}.pdp-dot:not(.ac){width:5px;}
+.pdpb{padding:14px 20px 0;}
+.pdpbr{font-family:'DM Mono';font-size:8px;color:#a07840;letter-spacing:3px;margin-bottom:3px;}
+.pdpsup{font-family:'DM Mono';font-size:7px;letter-spacing:2px;margin-bottom:4px;}
+.pdpnm{font-family:'Cormorant Garamond';font-size:23px;font-weight:300;color:#fff;line-height:1.05;margin-bottom:11px;}
+.pdprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;}
+.pdppr{font-family:'DM Mono';font-size:20px;color:#a07840;}
+.pdppro{font-family:'DM Mono';font-size:12px;color:#4a4238;text-decoration:line-through;margin-left:7px;}
+.pdprat{display:flex;align-items:center;gap:4px;}
+.pdpstars{font-size:11px;color:#a07840;}.pdprcnt{font-family:'DM Mono';font-size:8px;color:#4a4238;}
+.dvd{height:1px;background:rgba(255,255,255,0.06);margin:0 20px 13px;}
+.szlbl{font-family:'DM Mono';font-size:7.5px;color:#4a4238;letter-spacing:2px;padding:0 20px;margin-bottom:8px;}
+.szs{display:flex;gap:6px;flex-wrap:wrap;padding:0 20px 13px;}
+.sz{min-width:40px;height:38px;padding:0 8px;border-radius:9px;border:1px solid rgba(255,255,255,0.11);background:none;color:rgba(255,255,255,0.4);font-family:'DM Mono';font-size:9.5px;cursor:pointer;transition:all .2s;}
+.sz:hover{border-color:rgba(160,120,64,0.5);color:#a07840;}
+.sz.ac{border-color:#a07840;background:rgba(160,120,64,0.1);color:#a07840;}
+.pdpdesc{font-size:12px;color:rgba(255,255,255,0.36);line-height:1.7;font-weight:300;padding:0 20px 13px;}
+.pdpship{background:rgba(45,122,79,0.07);border:1px solid rgba(45,122,79,0.18);border-radius:9px;padding:9px 13px;margin:0 20px 11px;font-family:'DM Mono';font-size:7.5px;color:#2d7a4f;}
+.pdpmgn{background:rgba(160,120,64,0.05);border:1px solid rgba(160,120,64,0.18);border-radius:9px;padding:11px 14px;margin:0 20px 18px;}
+.pdpmgn-t{font-family:'DM Mono';font-size:7px;color:#a07840;letter-spacing:2px;margin-bottom:8px;}
+.pdpmgn-row{display:flex;justify-content:space-between;align-items:center;}
+.pdpmgn-v{font-family:'DM Mono';font-size:12px;}.pdpmgn-l{font-family:'DM Mono';font-size:6.5px;color:#4a4238;margin-top:2px;}
+.pdpacts{display:flex;gap:8px;padding:12px 20px;background:#1a1714;border-top:1px solid rgba(255,255,255,0.05);flex-shrink:0;}
+.btnar{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(160,120,64,0.38);background:transparent;color:#a07840;font-family:'DM Mono';font-size:8.5px;letter-spacing:1px;cursor:pointer;}
+.btncart{flex:2;padding:12px;border-radius:12px;border:none;background:#a07840;color:#1a1714;font-family:'DM Mono';font-size:8.5px;letter-spacing:1px;cursor:pointer;font-weight:500;}
+.btncart:disabled{opacity:.4;cursor:not-allowed;}
+.arw{flex:1;display:flex;flex-direction:column;background:#000;}
+.arhd{padding:14px 20px 12px;display:flex;align-items:center;gap:12px;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);}
+.arbk{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.arttl{font-family:'Cormorant Garamond';font-size:18px;font-weight:300;color:#fff;}
+.arpn{font-family:'DM Mono';font-size:7.5px;color:#a07840;letter-spacing:1px;}
+.arvp{flex:1;position:relative;overflow:hidden;background:linear-gradient(160deg,#141412,#0c0c0a);}
+.arscan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#a07840,transparent);animation:arsc 2s ease-in-out infinite;}
+@keyframes arsc{0%{top:15%;opacity:.9}50%{top:85%;opacity:1}100%{top:15%;opacity:.9}}
+.arc{position:absolute;width:14px;height:14px;}
+.arc.tl{top:16px;left:18px;border-top:2px solid #a07840;border-left:2px solid #a07840;}
+.arc.tr{top:16px;right:18px;border-top:2px solid #a07840;border-right:2px solid #a07840;}
+.arc.bl{bottom:80px;left:18px;border-bottom:2px solid #a07840;border-left:2px solid #a07840;}
+.arc.br{bottom:80px;right:18px;border-bottom:2px solid #a07840;border-right:2px solid #a07840;}
+.arbody{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.aroutline{width:110px;height:220px;border:2px dashed rgba(160,120,64,0.2);border-radius:55px 55px 26px 26px;display:flex;align-items:center;justify-content:center;}
+.arhint{position:absolute;bottom:88px;left:50%;transform:translateX(-50%);font-family:'DM Mono';font-size:7px;color:rgba(160,120,64,0.55);letter-spacing:2px;text-align:center;white-space:nowrap;}
+.arst{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(160,120,64,0.14);backdrop-filter:blur(10px);border:1px solid rgba(160,120,64,0.3);padding:5px 14px;border-radius:20px;font-family:'DM Mono';font-size:8px;color:#a07840;letter-spacing:1px;white-space:nowrap;}
+.arld{position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.arld-t{font-family:'DM Mono';font-size:10px;color:#a07840;letter-spacing:2px;}
+.arld-b{width:130px;height:2px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.arld-f{height:100%;background:#a07840;border-radius:2px;animation:ldf 2.2s ease forwards;}
+@keyframes ldf{0%{width:0%}100%{width:100%}}
+.arctrl{padding:11px 15px;background:rgba(10,10,10,0.98);border-top:1px solid rgba(255,255,255,0.05);}
+.arscr{display:flex;gap:7px;margin-bottom:10px;overflow-x:auto;scrollbar-width:none;}.arscr::-webkit-scrollbar{display:none;}
+.arith{width:40px;height:40px;border-radius:9px;border:2px solid transparent;cursor:pointer;overflow:hidden;flex-shrink:0;}
+.arith img{width:100%;height:100%;object-fit:cover;}.arith .pc-fb{font-size:20px;}
+.arith.sel{border-color:#a07840;}
+.arszr{display:flex;gap:6px;margin-bottom:9px;justify-content:center;}
+.arsz{padding:4px 10px;border-radius:6px;font-family:'DM Mono';font-size:8px;letter-spacing:1px;cursor:pointer;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.38);background:none;}
+.arsz.sel{border-color:#a07840;color:#a07840;background:rgba(160,120,64,0.1);}
+.arbtns{display:flex;gap:7px;}
+.arbtn{flex:1;padding:9px;text-align:center;border-radius:9px;font-family:'DM Mono';font-size:8px;letter-spacing:1px;cursor:pointer;border:none;}
+.arbtn.pri{background:#a07840;color:#1a1714;font-weight:500;}
+.arbtn.sec{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.09);}
+.carth{padding:16px 20px 10px;display:flex;align-items:center;gap:12px;}
+.cartbk{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.07);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.cartttl{font-family:'Cormorant Garamond';font-size:24px;font-weight:300;color:#fff;flex:1;}
+.empc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;text-align:center;}
+.empc-ic{font-size:52px;opacity:.18;}.empc-t{font-family:'Cormorant Garamond';font-size:24px;color:rgba(255,255,255,0.22);font-weight:300;}
+.empc-s{font-size:13px;color:rgba(255,255,255,0.14);font-weight:300;line-height:1.6;}
+.empc-btn{margin-top:10px;background:#a07840;color:#1a1714;border:none;padding:12px 28px;border-radius:10px;font-family:'DM Mono';font-size:9px;letter-spacing:1px;cursor:pointer;font-weight:500;}
+.ci{display:flex;gap:11px;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.ci-img{width:64px;height:64px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#1e1c19;}
+.ci-img img{width:100%;height:100%;object-fit:cover;}.ci-img .pc-fb{font-size:24px;}
+.ci-info{flex:1;}
+.ci-br{font-family:'DM Mono';font-size:7px;color:#4a4238;letter-spacing:1px;margin-bottom:2px;}
+.ci-nm{font-size:12px;color:#fff;margin-bottom:3px;line-height:1.3;}
+.ci-sz{font-family:'DM Mono';font-size:8px;color:#4a4238;}
+.ci-pr{font-family:'DM Mono';font-size:13px;color:#a07840;margin-top:3px;}
+.ci-rm{background:none;border:none;color:#4a4238;font-size:20px;cursor:pointer;align-self:flex-start;padding:2px;}
+.ci-rm:hover{color:#ff4466;}
+.qrow{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.qb{width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,0.06);border:none;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.qb:hover{background:rgba(255,255,255,0.11);}
+.qn{font-family:'DM Mono';font-size:12px;color:#fff;width:20px;text-align:center;}
+.csum{padding:13px 20px;background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.06);}
+.sr{display:flex;justify-content:space-between;margin-bottom:7px;}
+.sl{font-size:13px;color:#4a4238;font-weight:300;}.sv{font-family:'DM Mono';font-size:11px;color:#fff;}
+.sr.tot{border-top:1px solid rgba(255,255,255,0.07);padding-top:9px;margin-top:3px;}
+.sr.tot .sl{font-size:14px;font-weight:500;color:#fff;}.sr.tot .sv{font-size:15px;color:#a07840;}
+.fdel{display:inline-flex;align-items:center;gap:5px;background:rgba(45,122,79,0.09);border:1px solid rgba(45,122,79,0.2);padding:5px 11px;border-radius:6px;font-family:'DM Mono';font-size:7.5px;color:#2d7a4f;letter-spacing:1px;margin-bottom:11px;}
+.cobtn{display:block;width:100%;padding:14px;background:#a07840;border:none;border-radius:13px;font-family:'DM Mono';font-size:10px;letter-spacing:2px;color:#1a1714;cursor:pointer;font-weight:500;text-align:center;margin-top:13px;}
+.cosec{padding:12px 20px;}
+.cost{font-family:'DM Mono';font-size:8px;letter-spacing:2px;color:#a07840;text-transform:uppercase;margin-bottom:10px;}
+.coadr{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:13px;}
+.coanm{font-size:14px;color:#fff;font-weight:500;margin-bottom:3px;}
+.coatx{font-size:12px;color:#4a4238;font-weight:300;line-height:1.5;}
+.coatg{display:inline-block;background:rgba(160,120,64,0.1);border:1px solid rgba(160,120,64,0.25);color:#a07840;font-family:'DM Mono';font-size:7px;padding:2px 6px;border-radius:4px;margin-top:5px;letter-spacing:1px;}
+.popt{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:11px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);margin-bottom:7px;cursor:pointer;transition:all .2s;}
+.popt.sel{border-color:#a07840;background:rgba(160,120,64,0.07);}
+.poptic{font-size:20px;}.poptin{flex:1;}
+.poptnm{font-size:13px;color:#fff;}.poptsb{font-size:10px;color:#4a4238;font-weight:300;font-family:'DM Mono';}
+.prad{width:17px;height:17px;border-radius:50%;border:2px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.popt.sel .prad{border-color:#a07840;}
+.pradd{width:7px;height:7px;border-radius:50%;background:#a07840;opacity:0;transform:scale(0);transition:all .2s;}
+.popt.sel .pradd{opacity:1;transform:scale(1);}
+.oimini{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.oimini-img{width:40px;height:40px;border-radius:8px;overflow:hidden;background:#1e1c19;flex-shrink:0;}
+.oimini-img img{width:100%;height:100%;object-fit:cover;}.oimini-img .pc-fb{font-size:18px;}
+.oimini-nm{flex:1;font-size:11px;color:rgba(255,255,255,0.5);font-weight:300;}
+.oimini-pr{font-family:'DM Mono';font-size:12px;color:#a07840;}
+.pobtn{margin:6px 20px 20px;display:block;width:calc(100% - 40px);padding:14px;background:#a07840;border:none;border-radius:13px;font-family:'DM Mono';font-size:10px;letter-spacing:2px;color:#1a1714;cursor:pointer;font-weight:500;text-align:center;}
+.auto-ol{position:absolute;inset:0;background:rgba(10,8,6,0.97);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;}
+.auto-ic{font-size:48px;margin-bottom:16px;animation:spin 2s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.auto-tt{font-family:'Cormorant Garamond';font-size:24px;font-weight:300;color:#fff;margin-bottom:8px;}
+.auto-sb{font-family:'DM Mono';font-size:9px;color:#4a4238;letter-spacing:1px;margin-bottom:20px;}
+.astep{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);width:100%;text-align:left;}
+.astep-d{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.astep-d.done{background:#2d7a4f;}.astep-d.active{background:#a07840;animation:pulse 1s infinite;}.astep-d.pending{background:rgba(255,255,255,0.12);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.astep-t{font-size:12px;font-weight:300;}
+.suc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px 24px;overflow-y:auto;scrollbar-width:none;}
+.suc::-webkit-scrollbar{display:none;}
+.suc-ic{font-size:56px;margin:8px 0 14px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.suc-t{font-family:'Cormorant Garamond';font-size:28px;font-weight:300;color:#fff;margin-bottom:5px;}
+.suc-s{font-size:12px;color:#4a4238;font-weight:300;line-height:1.6;margin-bottom:16px;text-align:center;}
+.suc-n{font-family:'DM Mono';font-size:9px;color:#a07840;letter-spacing:2px;background:rgba(160,120,64,0.1);border:1px solid rgba(160,120,64,0.28);padding:7px 18px;border-radius:8px;margin-bottom:16px;}
+.auto-rpt{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;margin-bottom:12px;}
+.auto-rpt-t{font-family:'DM Mono';font-size:7px;color:#a07840;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.aact{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.aact:last-child{border-bottom:none;}
+.aact-ic{font-size:13px;flex-shrink:0;margin-top:1px;}
+.aact-tx{font-size:11px;color:rgba(255,255,255,0.55);font-weight:300;line-height:1.5;}
+.suc-trk{background:rgba(45,122,79,0.08);border:1px solid rgba(45,122,79,0.2);border-radius:10px;padding:12px 14px;margin-bottom:12px;width:100%;}
+.suc-trk-t{font-family:'DM Mono';font-size:7px;color:#2d7a4f;letter-spacing:2px;margin-bottom:5px;}
+.suc-trk-id{font-family:'DM Mono';font-size:12px;color:#fff;margin-bottom:3px;}
+.suc-trk-s{font-size:11px;color:#4a4238;font-weight:300;}
+.sucbtn{width:100%;padding:12px;border-radius:11px;font-family:'DM Mono';font-size:9px;letter-spacing:1px;cursor:pointer;margin-bottom:8px;font-weight:500;border:none;}
+.sucbtn.p{background:#a07840;color:#1a1714;}
+.sucbtn.s{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.08);}
+.srbr{display:flex;align-items:center;gap:10px;margin:14px 20px;background:rgba(255,255,255,0.05);border-radius:12px;padding:11px 16px;}
+.srin{flex:1;background:none;border:none;outline:none;font-size:14px;color:#fff;font-family:'DM Sans';}
+.srin::placeholder{color:rgba(255,255,255,0.18);}
+.srcl{font-family:'DM Mono';font-size:9px;color:#a07840;background:none;border:none;cursor:pointer;letter-spacing:1px;}
+.ptag{display:inline-block;padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.38);font-family:'DM Mono';font-size:7.5px;letter-spacing:1px;margin:0 5px 7px 0;cursor:pointer;}
+.ptag:hover{border-color:#a07840;color:#a07840;}
+.wlh{padding:18px 20px 14px;}
+.wlttl{font-family:'Cormorant Garamond';font-size:26px;font-weight:300;color:#fff;}
+.wlct{font-family:'DM Mono';font-size:8.5px;color:#4a4238;}
+.prftop{padding:22px 20px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.prfav{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#a07840,#c9a96e);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:11px;}
+.prfnm{font-family:'Cormorant Garamond';font-size:21px;font-weight:300;color:#fff;margin-bottom:3px;}
+.prfem{font-family:'DM Mono';font-size:8px;color:#4a4238;letter-spacing:1px;}
+.prfsts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);margin:0 20px 16px;border-radius:13px;overflow:hidden;}
+.prfst{background:#232120;padding:12px;text-align:center;}
+.prfsn{font-family:'DM Mono';font-size:16px;color:#a07840;margin-bottom:2px;}
+.prfsl{font-family:'DM Mono';font-size:6.5px;color:#4a4238;letter-spacing:1px;text-transform:uppercase;}
+.mi{display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;}
+.mi:hover{background:rgba(255,255,255,0.02);}
+.mi-ic{font-size:18px;width:24px;}.mi-tx{flex:1;font-size:13px;color:rgba(255,255,255,0.62);font-weight:300;}
+.mi-ar{color:#4a4238;font-size:13px;}.mi-bd{background:#a07840;color:#1a1714;font-family:'DM Mono';font-size:7px;padding:2px 6px;border-radius:9px;}
+.ordc{background:#232120;border-radius:11px;padding:12px 14px;margin:0 20px 10px;border:1px solid rgba(255,255,255,0.04);}
+.ordch{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.ordid{font-family:'DM Mono';font-size:8px;color:#a07840;letter-spacing:1px;}
+.ordst{font-family:'DM Mono';font-size:7px;letter-spacing:1px;padding:3px 8px;border-radius:20px;}
+.ordst.d{background:rgba(45,122,79,0.1);color:#2d7a4f;border:1px solid rgba(45,122,79,0.2);}
+.ordst.t{background:rgba(160,120,64,0.1);color:#a07840;border:1px solid rgba(160,120,64,0.2);}
+.ordips{display:flex;gap:6px;margin-bottom:8px;}
+.ordip{width:32px;height:32px;border-radius:7px;overflow:hidden;background:#1e1c19;}
+.ordip img{width:100%;height:100%;object-fit:cover;}.ordip .pc-fb{font-size:16px;}
+.ordcf{display:flex;justify-content:space-between;align-items:center;}
+.ordtot{font-family:'DM Mono';font-size:12px;color:#fff;}
+.ordtb{font-family:'DM Mono';font-size:7.5px;color:#a07840;background:rgba(160,120,64,0.1);border:1px solid rgba(160,120,64,0.2);padding:4px 10px;border-radius:5px;cursor:pointer;}
+.toast{position:absolute;bottom:86px;left:50%;transform:translateX(-50%) translateY(14px);background:rgba(20,18,16,0.97);backdrop-filter:blur(20px);border:1px solid rgba(160,120,64,0.3);padding:9px 18px;border-radius:10px;font-family:'DM Mono';font-size:9.5px;color:#fff;letter-spacing:1px;white-space:nowrap;opacity:0;transition:all .28s;z-index:999;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+@keyframes fdi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fdi{animation:fdi .26s ease both;}
+`;
+
+function Img({src,alt,style,fallback="🛍️"}){
+  const [err,setErr]=useState(false);
+  if(err) return <div style={{...style,background:"#1e1c19",display:"flex",alignItems:"center",justifyContent:"center",fontSize:style?.height>100?44:22}}>{fallback}</div>;
+  return <img src={src} alt={alt} style={style} onError={()=>setErr(true)}/>;
+}
+
+const STEPS=["Verifying payment...","Contacting supplier...","Placing wholesale order...","Generating tracking ID...","Scheduling Delhivery pickup...","Sending WhatsApp to customer...","Order automated ✓"];
+const genOID=()=>"LX-"+Math.floor(Math.random()*90000+10000);
+const genTID=()=>"DL"+Math.floor(Math.random()*900000000+100000000)+"IN";
+
+export default function App(){
+  const [scr,setScr]=useState("home");
+  const [prod,setProd]=useState(null);
+  const [sz,setSz]=useState(null);
+  const [cart,setCart]=useState([]);
+  const [wl,setWl]=useState([]);
+  const [cat,setCat]=useState("All");
+  const [supF,setSupF]=useState("All");
+  const [srchQ,setSrchQ]=useState("");
+  const [arP,setArP]=useState(null);
+  const [arSz,setArSz]=useState("M");
+  const [arRdy,setArRdy]=useState(false);
+  const [arLd,setArLd]=useState(false);
+  const [pay,setPay]=useState("upi");
+  const [autoProc,setAutoProc]=useState(false);
+  const [autoStep,setAutoStep]=useState(0);
+  const [autoActions,setAutoActions]=useState([]);
+  const [oid,setOid]=useState("");
+  const [tid,setTid]=useState("");
+  const [toast,setToast]=useState({v:false,m:""});
+  const [stack,setStack]=useState(["home"]);
+
+  const T=(m)=>{setToast({v:true,m});setTimeout(()=>setToast({v:false,m:""}),2200);};
+  const go=(s)=>{setStack(p=>[...p,s]);setScr(s);};
+  const bk=()=>{const ns=stack.slice(0,-1);setStack(ns);setScr(ns[ns.length-1]||"home");};
+  const nav=(s)=>{setStack([s]);setScr(s);};
+  const openP=(p)=>{setProd(p);setSz(null);go("pdp");};
+  const openAR=(p)=>{setArP(p||PRODUCTS[0]);setArRdy(false);setArLd(false);go("ar");};
+  const addCart=(p,s)=>{
+    if(!s){T("Please select a size");return;}
+    const ex=cart.find(i=>i.id===p.id&&i.size===s);
+    if(ex) setCart(cart.map(i=>i.id===p.id&&i.size===s?{...i,qty:i.qty+1}:i));
+    else setCart([...cart,{...p,size:s,qty:1}]);
+    T("Added to bag ✓");
+  };
+  const rmCart=(id,s)=>setCart(cart.filter(i=>!(i.id===id&&i.size===s)));
+  const updQty=(id,s,d)=>setCart(cart.map(i=>i.id===id&&i.size===s?{...i,qty:Math.max(1,i.qty+d)}:i));
+  const togWl=(p)=>{
+    if(wl.find(w=>w.id===p.id)){setWl(wl.filter(w=>w.id!==p.id));T("Removed ✓");}
+    else{setWl([...wl,p]);T("Saved ♥");}
+  };
+
+  const sub=cart.reduce((a,i)=>a+i.price*i.qty,0);
+  const gst=Math.round(sub*0.05);
+  const ship=sub>599?0:49;
+  const grand=sub+gst+ship;
+
+  const CATS=["All","Ethnic","Sarees","Menswear","Western","Festive"];
+  const SUPS=["All","Solfru","Baapstore","Wholesalebox"];
+  const fps=PRODUCTS.filter(p=>(cat==="All"||p.cat===cat)&&(supF==="All"||p.supplier===supF));
+  const sps=srchQ?PRODUCTS.filter(p=>[p.name,p.brand,p.cat,p.tag,p.supplier].some(f=>f.toLowerCase().includes(srchQ.toLowerCase()))):fps;
+
+  const placeOrder=async()=>{
+    const o=genOID(); const t=genTID();
+    setOid(o); setTid(t);
+    setAutoProc(true); setAutoStep(0);
+    const actions=[];
+    for(let i=0;i<=6;i++){
+      await new Promise(r=>setTimeout(r,750));
+      setAutoStep(i+1);
+    }
+    // Group by supplier
+    const bySupplier={};
+    cart.forEach(item=>{
+      if(!bySupplier[item.supplier]) bySupplier[item.supplier]=[];
+      bySupplier[item.supplier].push(item);
+    });
+    Object.entries(bySupplier).forEach(([sup,items])=>{
+      actions.push({ic:"📧",tx:`Email sent to ${sup}: ${items.map(i=>i.name+" x"+i.qty).join(", ")}`});
+    });
+    actions.push({ic:"🚚",tx:`Delhivery pickup scheduled — tracking: ${t}`});
+    actions.push({ic:"💬",tx:`WhatsApp sent: "Your order ${o} is confirmed! Delivery in 3-5 days."`});
+    actions.push({ic:"✅",tx:`Order auto-processed in under 10 seconds`});
+    setAutoActions(actions);
+    setAutoProc(false);
+    setCart([]);
+    setScr("success");
+  };
+
+  const tagCls={SALE:"sale",LUXURY:"lux","HOT DEAL":"hot",WEDDING:"wed",BRIDAL:"bri",NAVRATRI:"nav",COMBO:"",PARTY:"",OFFICE:"",DESIGNER:"lux"};
+
+  // PRODUCT CARD
+  const PC=({p,i=0})=>{
+    const inWl=wl.find(w=>w.id===p.id);
+    const [,sc]=SUP_COLORS[p.supplier]||["","#a07840"];
+    const fb=["🪷","👔","🌺","✨","🧥","🥻","🌸","💚","💍","🎩","🌻","🏵️","🎀","🧣","👗","🥻","🪬","🧦","🎋","💐"][p.id%20];
+    return(
+      <div className="pc fdi" style={{animationDelay:`${i*0.025}s`}} onClick={()=>openP(p)}>
+        <div className="pc-img">
+          <Img src={p.img} alt={p.name} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} fallback={fb}/>
+          <button className="pc-fav" style={inWl?{color:"#ff4466"}:{color:"#fff"}} onClick={e=>{e.stopPropagation();togWl(p);}}>{inWl?"♥":"♡"}</button>
+          <div className={`pc-tag ${tagCls[p.tag]||""}`}>{p.tag}</div>
+        </div>
+        <div className="pc-info">
+          <div className="pc-sup mn" style={{color:sc}}>{p.supplier}</div>
+          <div className="pc-brand mn">{p.brand}</div>
+          <div className="pc-name">{p.name}</div>
+          <div className="pc-prices">
+            <span className="pc-price mn">{fmt(p.price)}</span>
+            {p.original&&<span className="pc-orig mn">{fmt(p.original)}</span>}
+          </div>
+          <div className="pc-mgn mn">+{fmt(p.margin)} profit</div>
+        </div>
+      </div>
+    );
+  };
+
+  // BOTTOM NAV
+  const BNav=({a})=>(
+    <div className="bnav">
+      {[{id:"home",e:"🏠",l:"Home"},{id:"search",e:"🔍",l:"Search"},{id:"ar_n",e:"✨",l:"Try-On"},{id:"wl",e:"♡",l:"Saved"},{id:"prof",e:"👤",l:"Profile"}].map(n=>(
+        <button key={n.id} className={`ni${a===n.id?" act":""}`} onClick={()=>n.id==="ar_n"?openAR(PRODUCTS[0]):nav(n.id)}>
+          <span className="ni-ic">{n.e}</span><span className="ni-lb">{n.l}</span><div className="ni-dot"/>
+        </button>
+      ))}
+    </div>
+  );
+
+  // HOME
+  const Home=()=>(
+    <div className="sc">
+      <div className="hh">
+        <div>
+          <div className="mn" style={{fontSize:7,color:"#4a4238",letterSpacing:2,marginBottom:2}}>GOOD MORNING</div>
+          <div className="hlogo">LUXE</div>
+        </div>
+        <div className="hacts">
+          <button className="icb" onClick={()=>nav("wl")}>♡</button>
+          <button className="icb" onClick={()=>go("cart")}>🛒{cart.length>0&&<div className="cbdg">{cart.reduce((s,i)=>s+i.qty,0)}</div>}</button>
+        </div>
+      </div>
+      <div className="sb2" onClick={()=>nav("search")}><span>🔍</span><p>Search 60 products, suppliers...</p></div>
+      <div className="cats">{CATS.map(c=><div key={c} className={`cat${cat===c?" ac":""}`} onClick={()=>setCat(c)}>{c}</div>)}</div>
+      <div className="sf-row">
+        {SUPS.map(s=>{
+          const [bg,clr]=s==="All"?["rgba(255,255,255,0.06)","rgba(255,255,255,0.45)"]:SUP_COLORS[s];
+          return <button key={s} className="sfb mn" style={{background:supF===s?bg:"transparent",color:supF===s?clr:"#4a4238",borderColor:supF===s?clr:"rgba(255,255,255,0.07)"}} onClick={()=>setSupF(s)}>{s}</button>;
+        })}
+      </div>
+      <div className="banner" onClick={()=>openAR(PRODUCTS[0])}>
+        <div className="btag">⚡ AUTO-ORDER SYSTEM</div>
+        <div className="bttl sf">Order → Supplier<br/>Automatic</div>
+        <div className="bsub">Customer orders. AI contacts supplier, books Delhivery, sends tracking.</div>
+        <button className="bcta mn">SEE HOW →</button>
+      </div>
+      <div className="shd">
+        <div className="shd-t">{supF!=="All"?supF:cat!=="All"?cat:"All Products"}</div>
+        <div className="shd-c mn">{fps.length} of 60 items</div>
+      </div>
+      <div className="pgrid">{fps.map((p,i)=><PC key={p.id} p={p} i={i}/>)}</div>
+    </div>
+  );
+
+  // PDP
+  const PDP=()=>{
+    if(!prod) return null;
+    const inWl=wl.find(w=>w.id===prod.id);
+    const [,sc]=SUP_COLORS[prod.supplier]||["","#a07840"];
+    const fb=["🪷","👔","🌺","✨","🧥","🥻","🌸","💚","💍","🎩","🌻","🏵️"][prod.id%12];
+    return(
+      <div className="pdpw">
+        <div className="pdp-iw">
+          <Img src={prod.img} alt={prod.name} style={{width:"100%",height:"100%",objectFit:"cover"}} fallback={fb}/>
+          <button className="pdp-bk" onClick={bk}>‹</button>
+          <button className="pdp-wl" style={inWl?{color:"#ff4466"}:{color:"#fff"}} onClick={()=>togWl(prod)}>{inWl?"♥":"♡"}</button>
+          <div className="pdp-dots">{[0,1,2].map(i=><div key={i} className={`pdp-dot${i===0?" ac":""}`}/>)}</div>
+          <button className="pdp-arb" onClick={()=>openAR(prod)}>✨ AR TRY-ON</button>
+        </div>
+        <div className="sc">
+          <div className="pdpb">
+            <div className="pdpsup mn" style={{color:sc}}>via {prod.supplier} · Wholesale {fmt(prod.wholesale)}</div>
+            <div className="pdpbr mn">{prod.brand}</div>
+            <div className="pdpnm sf">{prod.name}</div>
+            <div className="pdprow">
+              <div><span className="pdppr mn">{fmt(prod.price)}</span>{prod.original&&<span className="pdppro mn">{fmt(prod.original)}</span>}</div>
+              <div className="pdprat"><span className="pdpstars">★ {prod.rating}</span><span className="pdprcnt mn">({prod.reviews})</span></div>
+            </div>
+          </div>
+          <div className="dvd"/>
+          <div className="szlbl mn">SELECT SIZE</div>
+          <div className="szs">{prod.sizes.map(s=><button key={s} className={`sz${sz===s?" ac":""}`} onClick={()=>setSz(s)}>{s}</button>)}</div>
+          <div className="dvd"/>
+          <div className="pdpdesc">{prod.desc}</div>
+          <div className="pdpship mn">🚚 Free delivery above ₹599 · 7-day returns · COD available</div>
+          <div className="pdpmgn">
+            <div className="pdpmgn-t mn">YOUR PROFIT (DROPSHIP)</div>
+            <div className="pdpmgn-row">
+              <div style={{textAlign:"center"}}><div className="pdpmgn-v mn" style={{color:"#a07840"}}>{fmt(prod.price)}</div><div className="pdpmgn-l mn">Selling</div></div>
+              <div style={{color:"#4a4238",fontSize:16,alignSelf:"center"}}>−</div>
+              <div style={{textAlign:"center"}}><div className="pdpmgn-v mn">{fmt(prod.wholesale)}</div><div className="pdpmgn-l mn">Wholesale</div></div>
+              <div style={{color:"#4a4238",fontSize:16,alignSelf:"center"}}>=</div>
+              <div style={{textAlign:"center"}}><div className="pdpmgn-v mn" style={{color:"#2d7a4f"}}>{fmt(prod.margin)}</div><div className="pdpmgn-l mn">Profit</div></div>
+            </div>
+          </div>
+        </div>
+        <div className="pdpacts">
+          <button className="btnar" onClick={()=>openAR(prod)}>✨ TRY ON</button>
+          <button className="btncart" onClick={()=>addCart(prod,sz)} disabled={!sz}>{sz?"ADD TO BAG":"SELECT SIZE"}</button>
+        </div>
+      </div>
+    );
+  };
+
+  // AR
+  const AR=()=>{
+    if(!arP) return null;
+    const scan=()=>{setArLd(true);setTimeout(()=>{setArLd(false);setArRdy(true);},2200);};
+    const fb=["🪷","👔","🌺","✨","🧥","🥻","🌸","💚","💍","🎩","🌻","🏵️"][arP.id%12];
+    return(
+      <div className="arw">
+        <div className="arhd">
+          <button className="arbk" onClick={bk}>‹</button>
+          <div><div className="arttl sf">AR Try-On</div><div className="arpn mn">{arP.name.slice(0,28).toUpperCase()}</div></div>
+        </div>
+        <div className="arvp">
+          {arRdy?(
+            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <span style={{fontSize:140,filter:"grayscale(0.2)"}}>🧍</span>
+              <div style={{position:"absolute",top:"21%",left:"50%",transform:"translateX(-50%)",width:70,height:82,borderRadius:10,overflow:"hidden",opacity:0.82,boxShadow:"0 4px 20px rgba(0,0,0,0.5)"}}>
+                <Img src={arP.img} alt={arP.name} style={{width:"100%",height:"100%",objectFit:"cover"}} fallback={fb}/>
+              </div>
+            </div>
+          ):(
+            <div className="arbody"><div className="aroutline"><span style={{fontSize:80,opacity:0.08}}>🧍</span></div>
+            {!arLd&&<div className="arscan"/>}</div>
+          )}
+          <div className="arc tl"/><div className="arc tr"/><div className="arc bl"/><div className="arc br"/>
+          {!arRdy&&!arLd&&<div className="arhint mn">Stand 1–2m away · full body visible</div>}
+          {arRdy&&<div className="arst mn">✓ OUTFIT APPLIED · SIZE {arSz}</div>}
+          {arLd&&<div className="arld"><div className="arld-t mn">SCANNING BODY...</div><div className="arld-b"><div className="arld-f"/></div></div>}
+        </div>
+        <div className="arctrl">
+          {arRdy&&<div className="arszr">{["XS","S","M","L","XL"].map(s=><div key={s} className={`arsz${arSz===s?" sel":""}`} onClick={()=>setArSz(s)}>{s}</div>)}</div>}
+          <div className="arscr">
+            {PRODUCTS.slice(0,12).map(p=>{
+              const f=["🪷","👔","🌺","✨","🧥","🥻","🌸","💚","💍","🎩","🌻","🏵️"][p.id%12];
+              return(
+                <div key={p.id} className={`arith${arP.id===p.id?" sel":""}`} onClick={()=>{setArP(p);setArRdy(false);setArLd(false);}}>
+                  <Img src={p.img} alt={p.name} style={{width:"100%",height:"100%",objectFit:"cover"}} fallback={f}/>
+                </div>
+              );
+            })}
+          </div>
+          {!arRdy?(
+            <div className="arbtns">
+              <button className="arbtn sec mn" onClick={scan}>📷 PHOTO</button>
+              <button className="arbtn pri mn" onClick={scan}>SCAN BODY</button>
+              <button className="arbtn sec mn" onClick={scan}>📁 UPLOAD</button>
+            </div>
+          ):(
+            <div className="arbtns">
+              <button className="arbtn sec mn" onClick={()=>T("Saved ✓")}>💾 SAVE</button>
+              <button className="arbtn pri mn" onClick={()=>{addCart(arP,arSz);go("cart");}}>ADD TO BAG</button>
+              <button className="arbtn sec mn" onClick={()=>T("Copied ✓")}>📤 SHARE</button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // CART
+  const Cart=()=>(
+    <>
+      <div className="carth">
+        <button className="cartbk" onClick={bk}>‹</button>
+        <div className="cartttl sf">Your <em style={{fontStyle:"italic",color:"#a07840"}}>Bag</em></div>
+        {cart.length>0&&<span className="mn" style={{fontSize:9,color:"#4a4238"}}>{cart.reduce((s,i)=>s+i.qty,0)} items</span>}
+      </div>
+      {cart.length===0?(
+        <div className="empc">
+          <div className="empc-ic">🛍️</div>
+          <div className="empc-t sf">Your bag is empty</div>
+          <div className="empc-s">Browse 60 products from Solfru,<br/>Baapstore & Wholesalebox</div>
+          <button className="empc-btn mn" onClick={()=>nav("home")}>BROWSE PRODUCTS</button>
+        </div>
+      ):(
+        <div className="sc">
+          {cart.map(item=>{
+            const fb=["🪷","👔","🌺","✨","🧥","🥻","🌸","💚","💍","🎩","🌻","🏵️"][item.id%12];
+            return(
+              <div key={`${item.id}-${item.size}`} className="ci">
+                <div className="ci-img"><Img src={item.img} alt={item.name} style={{width:"100%",height:"100%",objectFit:"cover"}} fallback={fb}/></div>
+                <div className="ci-info">
+                  <div className="ci-br mn">{item.supplier}</div>
+                  <div className="ci-nm">{item.name}</div>
+                  <div className="ci-sz mn">SIZE: {item.size}</div>
+                  <div className="ci-pr mn">{fmt(item.price)}</div>
+                  <div className="qrow">
+                    <button className="qb" onClick={()=>updQty(item.id,item.size,-1)}>−</button>
+                    <span className="qn mn">{item.qty}</span>
+                    <button className="qb" onClick={()=>updQty(item.id,item.size,1)}>+</button>
+                  </div>
+                </div>
+                <button className="ci-rm" onClick={()=>rmCart(item.id,item.size)}>×</button>
+              </div>
+            );
+          })}
+          <div style={{padding:"10px 20px 4px"}}>
+            {ship===0&&<div className="fdel mn">✓ FREE DELIVERY APPLIED</div>}
+          </div>
+          <div className="csum">
+            {[["Subtotal",fmt(sub)],["GST (5%)",fmt(gst)],["Delivery",ship===0?"FREE":fmt(ship)]].map(([l,v])=>(
+              <div key={l} className="sr"><span className="sl">{l}</span><span className="sv mn" style={l==="Delivery"&&ship===0?{color:"#2d7a4f"}:{}}>{v}</span></div>
+            ))}
+            <div className="sr tot"><span className="sl">Total</span><span className="sv mn">{fmt(grand)}</span></div>
+            <button className="cobtn mn" onClick={()=>go("checkout")}>PROCEED TO CHECKOUT →</button>
+          </div>
+          <div style={{height:20}}/>
+        </div>
+      )}
+    </>
+  );
+
+  // CHECKOUT
+  const Checkout=()=>(
+    <>
+      {autoProc&&(
+        <div className="auto-ol">
+          <div className="auto-ic">⚙️</div>
+          <div className="auto-tt sf">Auto-Processing</div>
+          <div className="auto-sb mn">AI IS CONTACTING SUPPLIERS</div>
+          <div style={{width:"100%"}}>
+            {STEPS.map((s,i)=>(
+              <div key={i} className="astep">
+                <div className={`astep-d${i<autoStep?" done":i===autoStep?" active":" pending"}`}/>
+                <div className="astep-t" style={{color:i<autoStep?"#2d7a4f":i===autoStep?"#fff":"rgba(255,255,255,0.25)"}}>{s}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="carth">
+        <button className="cartbk" onClick={bk}>‹</button>
+        <div className="cartttl sf">Checkout</div>
+      </div>
+      <div className="sc">
+        <div className="cosec">
+          <div className="cost mn">Delivery Address</div>
+          <div className="coadr">
+            <div className="coanm">Arjun Singh</div>
+            <div className="coatx">42, Bandra West, Near Linking Road<br/>Mumbai, Maharashtra — 400 050</div>
+            <div className="coatg mn">HOME</div>
+          </div>
+        </div>
+        <div className="cosec">
+          <div className="cost mn">Order Summary</div>
+          {cart.map(item=>{
+            const fb=["🪷","👔","🌺","✨","🧥","🥻","🌸","💚","💍","🎩","🌻","🏵️"][item.id%12];
+            return(
+              <div key={`${item.id}-${item.size}`} className="oimini">
+                <div className="oimini-img"><Img src={item.img} alt={item.name} style={{width:"100%",height:"100%",objectFit:"cover"}} fallback={fb}/></div>
+                <span className="oimini-nm">{item.name} · {item.size} ×{item.qty}</span>
+                <span className="oimini-pr mn">{fmt(item.price*item.qty)}</span>
+              </div>
+            );
+          })}
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:11,paddingTop:9,borderTop:"1px solid rgba(255,255,255,0.06)"}}>
+            <span className="mn" style={{fontSize:9,color:"#4a4238"}}>TOTAL (incl. GST)</span>
+            <span className="mn" style={{fontSize:15,color:"#a07840"}}>{fmt(grand)}</span>
+          </div>
+        </div>
+        <div className="cosec">
+          <div className="cost mn">Payment Method</div>
+          {[{id:"upi",e:"⚡",n:"UPI / GPay / PhonePe",s:"Instant · No charges"},{id:"card",e:"💳",n:"Credit / Debit Card",s:"EMI from ₹999"},{id:"bnpl",e:"🗓️",n:"LazyPay / Simpl",s:"Pay later in 15 days"},{id:"cod",e:"💵",n:"Cash on Delivery",s:"₹40 extra · Pay at door"}].map(m=>(
+            <div key={m.id} className={`popt${pay===m.id?" sel":""}`} onClick={()=>setPay(m.id)}>
+              <span className="poptic">{m.e}</span>
+              <div className="poptin"><div className="poptnm">{m.n}</div><div className="poptsb mn">{m.s}</div></div>
+              <div className="prad"><div className="pradd"/></div>
+            </div>
+          ))}
+        </div>
+        <div style={{margin:"0 20px 20px",background:"rgba(160,120,64,0.06)",border:"1px solid rgba(160,120,64,0.18)",borderRadius:11,padding:13}}>
+          <div className="mn" style={{fontSize:7.5,color:"#a07840",letterSpacing:2,marginBottom:7}}>⚡ AUTO-DROPSHIP</div>
+          <div style={{fontSize:11.5,color:"rgba(255,255,255,0.45)",fontWeight:300,lineHeight:1.6}}>After payment, AI automatically contacts the supplier, books Delhivery pickup, and sends WhatsApp tracking to customer — in under 10 seconds.</div>
+        </div>
+        <div style={{height:8}}/>
+      </div>
+      <button className="pobtn mn" onClick={placeOrder}>{pay==="cod"?"AUTO-PROCESS ORDER (COD)":`⚡ AUTO-PROCESS & PAY ${fmt(grand)}`}</button>
+    </>
+  );
+
+  // SUCCESS
+  const Success=()=>(
+    <div className="suc">
+      <div className="suc-ic">🎉</div>
+      <div className="suc-t sf">Order Automated!</div>
+      <div className="suc-s">AI processed your entire order.<br/>Here's what happened in 10 seconds:</div>
+      <div className="suc-n mn"># {oid}</div>
+      <div className="auto-rpt">
+        <div className="auto-rpt-t mn">⚡ AUTO-ACTIONS COMPLETED</div>
+        {autoActions.map((a,i)=>(
+          <div key={i} className="aact"><span className="aact-ic">{a.ic}</span><div className="aact-tx">{a.tx}</div></div>
+        ))}
+      </div>
+      <div className="suc-trk">
+        <div className="suc-trk-t mn">DELHIVERY TRACKING</div>
+        <div className="suc-trk-id mn">{tid}</div>
+        <div className="suc-trk-s">Est. delivery: 3–5 days · Pickup in 24 hrs</div>
+      </div>
+      <button className="sucbtn p mn" onClick={()=>nav("prof")}>TRACK ORDER</button>
+      <button className="sucbtn s mn" onClick={()=>nav("home")}>CONTINUE SHOPPING</button>
+    </div>
+  );
+
+  // SEARCH
+  const Search=()=>(
+    <div className="sc">
+      <div className="srbr">
+        <span>🔍</span>
+        <input className="srin" placeholder="Search 60 products, brands..." value={srchQ} onChange={e=>setSrchQ(e.target.value)} autoFocus/>
+        {srchQ&&<button className="srcl mn" onClick={()=>setSrchQ("")}>CLEAR</button>}
+      </div>
+      {!srchQ?(
+        <div style={{padding:"4px 20px 20px"}}>
+          <div className="mn" style={{fontSize:8,color:"#4a4238",letterSpacing:2,marginBottom:12}}>POPULAR SEARCHES</div>
+          {["Kurti","Saree","Anarkali","Lehenga","Sherwani","Shirt","Palazzo","Festive","Wedding","Bridal","Solfru","Baapstore","Wholesalebox"].map(t=>(
+            <span key={t} className="ptag mn" onClick={()=>setSrchQ(t)}>{t}</span>
+          ))}
+        </div>
+      ):(
+        <>
+          <div style={{padding:"0 20px 12px"}}><div className="mn" style={{fontSize:8,color:"#4a4238",letterSpacing:2}}>{sps.length} RESULTS FOR "{srchQ.toUpperCase()}"</div></div>
+          <div className="pgrid">{sps.map((p,i)=><PC key={p.id} p={p} i={i}/>)}</div>
+        </>
+      )}
+    </div>
+  );
+
+  // WISHLIST
+  const Wishlist=()=>(
+    <>
+      <div className="wlh">
+        <div className="wlttl sf">Saved <em style={{fontStyle:"italic",color:"#a07840"}}>Items</em></div>
+        <div className="wlct mn">{wl.length} items</div>
+      </div>
+      {wl.length===0?(
+        <div className="empc"><div className="empc-ic">♡</div><div className="empc-t sf">Nothing saved yet</div><div className="empc-s">Tap ♡ on any product.</div><button className="empc-btn mn" onClick={()=>nav("home")}>EXPLORE</button></div>
+      ):(
+        <div className="sc"><div className="pgrid">{wl.map((p,i)=><PC key={p.id} p={p} i={i}/>)}</div></div>
+      )}
+    </>
+  );
+
+  // PROFILE
+  const Profile=()=>(
+    <div className="sc">
+      <div className="prftop">
+        <div className="prfav">👤</div>
+        <div className="prfnm sf">Arjun Singh</div>
+        <div className="prfem mn">arjun.singh@email.com</div>
+      </div>
+      <div className="prfsts">
+        <div className="prfst"><div className="prfsn mn">3</div><div className="prfsl mn">Orders</div></div>
+        <div className="prfst"><div className="prfsn mn">{wl.length}</div><div className="prfsl mn">Saved</div></div>
+        <div className="prfst"><div className="prfsn mn" style={{fontSize:11}}>₹4,140</div><div className="prfsl mn">Earned</div></div>
+      </div>
+      <div className="mn" style={{fontSize:7.5,color:"#4a4238",letterSpacing:2,padding:"4px 20px 10px"}}>RECENT ORDERS</div>
+      {[{id:"LX-38291",st:"t",ps:[PRODUCTS[0],PRODUCTS[20]],tot:1698,dt:"Apr 24"},{id:"LX-29011",st:"d",ps:[PRODUCTS[30]],tot:1799,dt:"Apr 18"},{id:"LX-21445",st:"d",ps:[PRODUCTS[50],PRODUCTS[51]],tot:8998,dt:"Apr 10"}].map(o=>(
+        <div key={o.id} className="ordc">
+          <div className="ordch"><span className="ordid mn"># {o.id}</span><span className={`ordst mn ${o.st}`}>{o.st==="d"?"✓ DELIVERED":"IN TRANSIT"}</span></div>
+          <div className="ordips">{o.ps.map(p=>{const fb=["🪷","👔","🌺","✨","🧥","🥻"][p.id%6];return(<div key={p.id} className="ordip"><Img src={p.img} alt={p.name} style={{width:"100%",height:"100%",objectFit:"cover"}} fallback={fb}/></div>);})}</div>
+          <div className="ordcf"><span className="ordtot mn">{fmt(o.tot)}</span><div style={{display:"flex",gap:8,alignItems:"center"}}><span className="mn" style={{fontSize:7.5,color:"#4a4238"}}>{o.dt}</span><button className="ordtb mn" onClick={()=>T("Tracking updated")}>TRACK →</button></div></div>
+        </div>
+      ))}
+      <div style={{height:8}}/>
+      {[{e:"📦",t:"My Orders"},{e:"💰",t:"Earnings & Payouts"},{e:"🏪",t:"My Suppliers (3 active)",b:"AUTO"},{e:"✨",t:"AR Try-On History"},{e:"📍",t:"Delivery Addresses"},{e:"💳",t:"Payment Methods"},{e:"🎁",t:"Refer & Earn ₹100"},{e:"🌐",t:"Language / भाषा"}].map(item=>(
+        <div key={item.t} className="mi" onClick={()=>T(`Opening ${item.t}...`)}>
+          <span className="mi-ic">{item.e}</span><span className="mi-tx">{item.t}</span>
+          {item.b&&<span className="mi-bd mn">{item.b}</span>}
+          <span className="mi-ar">›</span>
+        </div>
+      ))}
+      <div style={{height:20}}/>
+    </div>
+  );
+
+  const hasNav=!["cart","checkout","ar","success"].includes(scr);
+  const navAct={pdp:"home",wl:"wl",prof:"prof",search:"search"}[scr]||scr;
+  const render=()=>{
+    if(scr==="ar") return <AR/>;
+    if(scr==="pdp") return <PDP/>;
+    if(scr==="cart") return <Cart/>;
+    if(scr==="checkout") return <Checkout/>;
+    if(scr==="success") return <Success/>;
+    if(scr==="search") return <Search/>;
+    if(scr==="wl") return <Wishlist/>;
+    if(scr==="prof") return <Profile/>;
+    return <Home/>;
+  };
+
+  return(
+    <>
+      <style>{FONTS}</style>
+      <style>{CSS}</style>
+      <div style={{display:"flex",justifyContent:"center",minHeight:"100vh",padding:"20px 0",background:"#0a0908"}}>
+        <div className="phone">
+          <div className="sbar"><span className="st mn">9:41</span><div className="sr2"><span>📶</span><span>🔋</span></div></div>
+          <div className="scr">{render()}</div>
+          {hasNav&&<BNav a={navAct}/>}
+          <div className={`toast mn${toast.v?" show":""}`}>{toast.m}</div>
+        </div>
+      </div>
+    </>
+  );
+}
